@@ -134,22 +134,68 @@ mod tests {
   use super::*;
 
   #[tokio::test]
-  async fn set_lock_test() {
+  async fn lock() {
     let client = redis::Client::open("redis://127.0.0.1/").unwrap();
     let relock = Relock {
       client: client.clone(),
     };
 
     let key = "foo";
-    let ttl = Duration::from_secs(10).as_millis() as usize;
+    let ttl = Duration::from_secs(1).as_millis() as usize;
 
+    // Assert lock creation
     let response = relock.lock(key, ttl).await.unwrap();
-    assert_eq!(response.id.len(), 20);
+    let actual = response.id.len();
+    let expected = 20;
+    assert_eq!(actual, expected);
 
     let mut con = client.get_async_connection().await.unwrap();
-    let value: String = con.get(key).await.unwrap();
-    assert_eq!(value, response.id);
 
-    relock.unlock(key, response.id.as_str()).await.unwrap();
+    // Assert Redis key creation
+    let value: String = con.get(key).await.unwrap();
+    let actual = value;
+    let expected = response.id;
+    assert_eq!(actual, expected);
+
+    // Assert key TTL
+    sleep(Duration::from_secs(1)).await;
+    let value = con.get::<&str, RedisValue>(key).await;
+    let actual = value;
+    let expected = Ok(RedisValue::Nil);
+    assert_eq!(actual, expected);
+  }
+
+  #[tokio::test]
+  async fn unlock() {
+    let client = redis::Client::open("redis://127.0.0.1/").unwrap();
+    let relock = Relock {
+      client: client.clone(),
+    };
+
+    let key = "baz";
+    let ttl = Duration::from_secs(1).as_millis() as usize;
+
+    let response = relock.lock(key, ttl).await.unwrap();
+    let lock_id = response.id;
+
+    // Assert lock removal
+    let response = relock.unlock(key, &lock_id).await.unwrap();
+    let actual = response;
+    let expected = 1;
+    assert_eq!(actual, expected);
+
+    let mut con = client.get_async_connection().await.unwrap();
+
+    // Assert Redis key removal
+    let value = con.get::<&str, RedisValue>(key).await;
+    let actual = value;
+    let expected = Ok(RedisValue::Nil);
+    assert_eq!(actual, expected);
+
+    // Assert lock removal for the second time
+    let response = relock.unlock(key, &lock_id).await.unwrap();
+    let actual = response;
+    let expected = 0;
+    assert_eq!(actual, expected);
   }
 }
