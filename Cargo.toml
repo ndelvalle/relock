@@ -4,10 +4,13 @@ version = "0.1.0"
 authors = ["Nicolas del Valle <nicolas.delvalle@gmail.com>"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 redis = { version = "0.21.0", features = ["tokio-comp"] }
 thiserror = "1.0.26"
 rand = "0.8.4"
-tokio = { version = "1.9.0", features = ["time", "rt", "macros"] }
+tokio = { version = "1.9.0", features = ["time"] }
+
+[dev-dependencies]
+chrono = "0.4.19"
+futures = "0.3.16"
+tokio = { version = "1.9.0", features = ["rt", "macros", "fs", "rt-multi-thread"] }
