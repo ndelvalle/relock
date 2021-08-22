@@ -54,7 +54,6 @@
 //! # }
 //! ```
 
-
 // Implementation details:
 // https://redis.io/topics/distlock#correct-implementation-with-a-single-instance
 
