@@ -12,14 +12,13 @@
 //!
 //! ```
 //! use relock::Relock;
-//! use tokio::time::Duration;
 //!
-//! #[tokio::main]
+//! # #[tokio::main]
 //! # async fn main() {
 //! let relock = Relock::new("redis://127.0.0.1/").unwrap();
 //!
 //! let lock_key = "foo-lock";
-//! let time_to_live = Duration::from_secs(10).as_millis() as usize;
+//! let time_to_live = 10_000;
 //! let retry_count = 5;
 //! let retry_delay = 200;
 //!
@@ -37,14 +36,13 @@
 //!
 //! ```
 //! use relock::Relock;
-//! use tokio::time::Duration;
 //!
-//! #[tokio::main]
+//! # #[tokio::main]
 //! # async fn main() {
 //! let relock = Relock::new("redis://127.0.0.1/").unwrap();
 //!
 //! let lock_key = "foo-try-lock";
-//! let time_to_live = Duration::from_secs(10).as_millis() as usize;
+//! let time_to_live = 10_000;
 //!
 //! // Acquire the lock. If the lock is bussy, this method will return a Lock
 //! // Error. Consider waiting a bit before retrying or use `lock` method instead.
@@ -57,7 +55,7 @@
 // Implementation details:
 // https://redis.io/topics/distlock#correct-implementation-with-a-single-instance
 
-pub mod error;
+mod error;
 
 use rand::Rng as RngTrait;
 use redis::Client as RedisClient;
@@ -65,7 +63,7 @@ use redis::IntoConnectionInfo;
 use redis::Value as RedisValue;
 use tokio::time::{sleep, Duration};
 
-use error::Error;
+pub use error::Error;
 
 const LOCK_SCRIPT: &str = "return redis.call('set', ARGV[1], ARGV[2], 'px', ARGV[3], 'nx')";
 const UNLOCK_SCRIPT: &str = r#"
