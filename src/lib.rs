@@ -26,7 +26,7 @@
 //! // Acquire the lock. If the lock is bussy, this method will retry
 //! // `retry_count` times with a delay of `retry_delay` milliseconds between
 //! // each retry.
-//! let lock = relock.lock::<&str>(lock_key, time_to_live, retry_count, retry_delay).await.unwrap();
+//! let lock = relock.lock(lock_key, time_to_live, retry_count, retry_delay).await.unwrap();
 //! // Do something
 //! relock.unlock(lock_key, lock.id).await.unwrap();
 //! # }
@@ -113,7 +113,7 @@ impl Relock {
 
   pub async fn lock<T>(
     &self,
-    key: &str,
+    key: T,
     ttl: usize,
     retry_count: u32,
     retry_delay: u32,
@@ -122,7 +122,7 @@ impl Relock {
     T: AsRef<str>,
   {
     for _ in 0..retry_count {
-      let lock_result = self.try_lock(key, ttl).await;
+      let lock_result = self.try_lock(key.as_ref(), ttl).await;
       match lock_result {
         Ok(lock) => return Ok(lock),
         Err(Error::RedisError(error)) => return Err(Error::RedisError(error)),

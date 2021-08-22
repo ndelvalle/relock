@@ -116,7 +116,7 @@ async fn lock_concurrently() {
       let retry_delay = 1000;
 
       let lock = relock
-        .lock::<&str>(key, ttl, retry_count, retry_delay)
+        .lock(key, ttl, retry_count, retry_delay)
         .await
         .unwrap();
 
