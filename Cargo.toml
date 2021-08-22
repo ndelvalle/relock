@@ -3,6 +3,8 @@ name = "relock"
 version = "0.1.0"
 authors = ["Nicolas del Valle <nicolas.delvalle@gmail.com>"]
 edition = "2018"
+description = "Distributed async locking using Redis"
+license = "MIT"
 
 [dependencies]
 redis = { version = "0.21.0", features = ["tokio-comp"] }
