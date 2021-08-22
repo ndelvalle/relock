@@ -33,11 +33,10 @@ $ cargo add relock
 
 ```rust
 use relock::Relock;
-use tokio::time::Duration;
 
 let relock = Relock::new("redis://127.0.0.1/").unwrap();
 let lock_key = "foo-lock";
-let time_to_live = Duration::from_secs(10).as_millis() as usize;
+let time_to_live = 10_000;
 let retry_count = 5;
 let retry_delay = 200;
 
@@ -53,11 +52,10 @@ relock.unlock(lock_key, lock.id).await.unwrap();
 
 ```rust
 use relock::Relock;
-use tokio::time::Duration;
 
 let relock = Relock::new("redis://127.0.0.1/").unwrap();
 let lock_key = "foo-try-lock";
-let time_to_live = Duration::from_secs(10).as_millis() as usize;
+let time_to_live = 10_000;
 
 // Acquire the lock. If the lock is bussy, this method will return a Lock
 // Error. Consider waiting a bit before retrying or use `lock` method instead.
