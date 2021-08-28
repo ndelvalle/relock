@@ -55,7 +55,7 @@
 // Implementation details:
 // https://redis.io/topics/distlock#correct-implementation-with-a-single-instance
 
-mod error;
+pub mod error;
 
 use rand::Rng as RngTrait;
 use redis::Client as RedisClient;
