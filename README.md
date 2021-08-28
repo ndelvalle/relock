@@ -17,7 +17,7 @@ Add `relock` as a dependency in the cargo.toml file of your project:
 
 ```toml
 [dependencies]
-relock = "0.1.1"
+relock = "0.1.2"
 ```
 
 If you have [cargo-edit](https://github.com/killercup/cargo-edit) utility tool
