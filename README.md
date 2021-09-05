@@ -1,5 +1,7 @@
 # relock
 
+[![](https://github.com/ndelvalle/relock/workflows/Rust/badge.svg)](https://github.com/ndelvalle/relock/actions?query=workflow%3ARust)
+
 Distributed async locking using Redis
 
 ## Description
